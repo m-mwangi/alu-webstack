@@ -1,28 +1,16 @@
 #!/usr/bin/env bash
-
-# Bash script displaying information about subdomains
-# This script fetches DNS-related information about subdomains
-
-display_info() {
+# Bash script displaying information about sub domains
+display_info ()
+{
     domain="$1"
     subdomain="$2"
-    ip_address=$(dig +short "$subdomain.$domain" | tail -n1)
-    if [ -n "$ip_address" ]; then
-        printf "The subdomain %s is a %s record and points to %s\n" "$subdomain" "$(dig "$subdomain.$domain" +short | awk 'NR==1')" "$ip_address"
-    else
-        echo "No DNS record found for $subdomain.$domain"
-    fi
+    dig "$subdomain.$domain" | awk '/ANSWER SECTION:/{getline; printf "The subdomain %s is a %s record and points to %s\n", var, $4, $5}' var="$subdomain"
 }
 
-# Check if domain argument is provided
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 <domain> [<subdomain>]"
-    exit 1
-fi
-
-# Fetch information for specified subdomains or default ones
-for subdomain in "www" "lb-01" "web-01" "web-02"; do
-    if [ -z "$2" ] || [ "$2" == "$subdomain" ]; then
+for subdomain in "www" "lb-01" "web-01" "web-02"
+do
+    if [ -z "$2" ] || [ "$2" == "$subdomain" ] ;
+    then
         display_info "$1" "$subdomain"
     fi
 done

@@ -40,7 +40,7 @@ frontend www-http
         default_backend web-backend
 
 frontend www-https
-        bind *:433 crt /etc/letsencrypt/live/www.allmarion.tech/fullchain.pem
+    bind *:443 crt /etc/letsencrypt/live/web-01.allmarion.tech/fullchain.pem
         http-request set-header X-Forwarded-Proto https
         acl letsencrypt-acl path_beg /.well-known/acme-challenge/
         use_backend letsencrypt-backend if letsencrypt-acl
